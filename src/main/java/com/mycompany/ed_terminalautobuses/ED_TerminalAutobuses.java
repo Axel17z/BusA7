@@ -1,13 +1,14 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- */
-
 package com.mycompany.ed_terminalautobuses;
 
+import com.mycompany.ed_terminalautobuses.visitas.VentanaPrincipal;
 
 public class ED_TerminalAutobuses {
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+
+        java.awt.EventQueue.invokeLater(() -> {
+            new VentanaPrincipal().setVisible(true);
+        });
+
     }
 }

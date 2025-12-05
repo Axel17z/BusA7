@@ -22,7 +22,7 @@ public class DialogVenta extends javax.swing.JDialog {
     public DialogVenta(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        cargarDatos();       // <-- AGREGA ESTO
+        cargarDatos();       
         configurarEventos();
     }
 
@@ -229,7 +229,6 @@ public class DialogVenta extends javax.swing.JDialog {
         }
         //</editor-fold>
 
-        /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 DialogVenta dialog = new DialogVenta(new javax.swing.JFrame(), true);
@@ -244,7 +243,6 @@ public class DialogVenta extends javax.swing.JDialog {
         });
     }
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancelar;
     private javax.swing.JButton btnConfirmar;
     private javax.swing.JComboBox<String> cmbDestino;
@@ -256,5 +254,4 @@ public class DialogVenta extends javax.swing.JDialog {
     private javax.swing.JLabel lblPrecio;
     private javax.swing.JTextField txtNombre;
     private javax.swing.JTextField txtPrecio;
-    // End of variables declaration//GEN-END:variables
 }

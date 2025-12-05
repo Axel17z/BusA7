@@ -26,28 +26,26 @@ public class PanelAsiento extends javax.swing.JPanel {
     }
     
     private void configurarBotones() {
-        // Columna izquierda (1, 5, 9, 13, 17)
+        
         btnAsiento1.addActionListener((ActionEvent e) -> manejarAsiento(1));
         btnAsiento5.addActionListener((ActionEvent e) -> manejarAsiento(5));
         btnAsiento9.addActionListener((ActionEvent e) -> manejarAsiento(9));
         btnAsiento13.addActionListener((ActionEvent e) -> manejarAsiento(13));
         btnAsiento17.addActionListener((ActionEvent e) -> manejarAsiento(17));
         
-        // Columna izquierda (2, 6, 10, 14, 18)
         btnAsiento2.addActionListener((ActionEvent e) -> manejarAsiento(2));
         btnAsiento6.addActionListener((ActionEvent e) -> manejarAsiento(6));
         btnAsiento10.addActionListener((ActionEvent e) -> manejarAsiento(10));
         btnAsiento14.addActionListener((ActionEvent e) -> manejarAsiento(14));
         btnAsiento18.addActionListener((ActionEvent e) -> manejarAsiento(18));
         
-        // Columna derecha (3, 7, 11, 15, 19)
         btnAsiento3.addActionListener((ActionEvent e) -> manejarAsiento(3));
         btnAsiento7.addActionListener((ActionEvent e) -> manejarAsiento(7));
         btnAsiento11.addActionListener((ActionEvent e) -> manejarAsiento(11));
         btnAsiento15.addActionListener((ActionEvent e) -> manejarAsiento(15));
         btnAsiento19.addActionListener((ActionEvent e) -> manejarAsiento(19));
         
-        // Columna derecha (4, 8, 12, 16, 20)
+        
         btnAsiento4.addActionListener((ActionEvent e) -> manejarAsiento(4));
         btnAsiento8.addActionListener((ActionEvent e) -> manejarAsiento(8));
         btnAsiento12.addActionListener((ActionEvent e) -> manejarAsiento(12));
@@ -55,16 +53,16 @@ public class PanelAsiento extends javax.swing.JPanel {
         btnAsiento20.addActionListener((ActionEvent e) -> manejarAsiento(20));
     }
     
-    // 2. Manejar clic en asiento
+    
     private void manejarAsiento(int numero) {
         if (!asientosOcupados[numero]) {
-            // Mostrar mensaje (aquí después conectarás con DialogVenta)
+           
             JOptionPane.showMessageDialog(this,
                 "Seleccionaste el asiento #" + numero,
                 "Selección de Asiento",
                 JOptionPane.INFORMATION_MESSAGE);
             
-            // Cambiar a ocupado
+            
             asientosOcupados[numero] = true;
             actualizarBoton(numero);
         } else {
@@ -75,7 +73,7 @@ public class PanelAsiento extends javax.swing.JPanel {
         }
     }
     
-    // 3. Actualizar apariencia de un botón específico
+   
     private void actualizarBoton(int numero) {
         JButton boton = obtenerBotonPorNumero(numero);
         if (boton != null) {
@@ -91,7 +89,7 @@ public class PanelAsiento extends javax.swing.JPanel {
         }
     }
     
-    // 4. Obtener botón por número
+    
     private JButton obtenerBotonPorNumero(int numero) {
         switch (numero) {
             case 1: return btnAsiento1;
@@ -118,9 +116,9 @@ public class PanelAsiento extends javax.swing.JPanel {
         }
     }
     
-    // 5. Configurar apariencia inicial
+    
     private void configurarAparienciaInicial() {
-        // Hacer todos los botones verdes inicialmente
+       
         JButton[] todosBotones = {
             btnAsiento1, btnAsiento2, btnAsiento3, btnAsiento4,
             btnAsiento5, btnAsiento6, btnAsiento7, btnAsiento8,
@@ -135,7 +133,7 @@ public class PanelAsiento extends javax.swing.JPanel {
         }
     }
     
-    // 6. Métodos públicos para que VentanaPrincipal los use
+    
     
     public void ocuparAsiento(int numero) {
         if (numero >= 1 && numero <= 20) {

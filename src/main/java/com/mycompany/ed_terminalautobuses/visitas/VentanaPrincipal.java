@@ -4,17 +4,184 @@
  */
 package com.mycompany.ed_terminalautobuses.visitas;
 
+import com.mycompany.ed_terminalautobuses.modelos.Terminal;
+import com.mycompany.ed_terminalautobuses.modelos.Pasajero;
+import javax.swing.JOptionPane;
+import java.awt.Color;
+import javax.swing.JButton;
+
 /**
  *
  * @author Familiar
  */
 public class VentanaPrincipal extends javax.swing.JFrame {
+    
+    private Terminal terminal;
+    private JButton[] botonesAsientos;
 
     /**
      * Creates new form VentanaPrincipal
      */
     public VentanaPrincipal() {
         initComponents();
+        
+        // Cambiar textos de etiquetas y botones
+        lblTerminalActualTexto.setText("TX");
+        lblTerminalActual.setText("Terminal Actual");
+        lblSiguienteTerminal.setText("Siguiente Terminal");
+        btnAvanzar.setText("Avanzar");
+        btnReporte.setText("Reporte");
+        
+        terminal = new Terminal();
+        inicializarBotones();
+        actualizarInterfaz();
+    }
+    
+    private void inicializarBotones() {
+        botonesAsientos = new JButton[]{
+            btnAsiento1, btnAsiento2, btnAsiento3, btnAsiento4,
+            btnAsiento5, btnAsiento6, btnAsiento7, btnAsiento8,
+            btnAsiento9, btnAsiento10, btnAsiento11, btnAsiento12,
+            btnAsiento13, btnAsiento14, btnAsiento15, btnAsiento16,
+            btnAsiento17, btnAsiento18, btnAsiento19, btnAsiento20
+        };
+        
+        // Configurar eventos para cada botón
+        for (int i = 0; i < botonesAsientos.length; i++) {
+            final int numeroAsiento = i + 1;
+            botonesAsientos[i].addActionListener(e -> manejarClicAsiento(numeroAsiento));
+        }
+        
+        // Configurar botón avanzar
+        btnAvanzar.addActionListener(e -> avanzarTerminal());
+        
+        // Configurar botón reporte
+        btnReporte.addActionListener(e -> mostrarReporte());
+        
+        actualizarEstadosAsientos();
+    }
+    
+    private void manejarClicAsiento(int numeroAsiento) {
+        if (terminal.esUltimaTerminal()) {
+            JOptionPane.showMessageDialog(this, 
+                "El viaje ha terminado en Nogales. No se pueden vender más boletos.",
+                "Viaje Terminado", 
+                JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+        
+        // Verificar si el asiento está ocupado
+        var asientos = terminal.getAsientosDisponibles();
+        boolean disponible = asientos.stream()
+            .anyMatch(a -> a.getNumero() == numeroAsiento);
+        
+        if (!disponible) {
+            JOptionPane.showMessageDialog(this, 
+                "El asiento #" + numeroAsiento + " ya está ocupado",
+                "Asiento no disponible", 
+                JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        // Abrir diálogo de venta
+        DialogVenta dialog = new DialogVenta(this, true, numeroAsiento);
+        dialog.setLocationRelativeTo(this);
+        dialog.setVisible(true);
+    }
+    
+    private void actualizarEstadosAsientos() {
+        for (int i = 0; i < botonesAsientos.length; i++) {
+            int numeroAsiento = i + 1;
+            var asientos = terminal.getAsientosDisponibles();
+            boolean ocupado = asientos.stream()
+                .noneMatch(a -> a.getNumero() == numeroAsiento);
+            
+            if (ocupado) {
+                botonesAsientos[i].setBackground(Color.RED);
+                botonesAsientos[i].setForeground(Color.WHITE);
+                botonesAsientos[i].setText(numeroAsiento + " (O)");
+            } else {
+                botonesAsientos[i].setBackground(Color.GREEN);
+                botonesAsientos[i].setForeground(Color.BLACK);
+                botonesAsientos[i].setText(String.valueOf(numeroAsiento));
+            }
+        }
+    }
+    
+    private void avanzarTerminal() {
+        if (terminal.esUltimaTerminal()) {
+            JOptionPane.showMessageDialog(this, 
+                "Ya se llegó a la última terminal (Nogales)",
+                "Fin del Viaje", 
+                JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+        
+        terminal.avanzarTerminal();
+        actualizarInterfaz();
+        actualizarEstadosAsientos();
+        
+        txtConsola.append("Avanzando a " + terminal.getTerminalActual() + "\n");
+    }
+    
+    private void mostrarReporte() {
+        if (!terminal.esUltimaTerminal()) {
+            JOptionPane.showMessageDialog(this, 
+                "El reporte solo está disponible al final del viaje (en Nogales)",
+                "Reporte no disponible", 
+                JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        StringBuilder reporte = new StringBuilder();
+        reporte.append("=== REPORTE FINAL DEL VIAJE ===\n");
+        reporte.append("Terminal final: ").append(terminal.getTerminalActual()).append("\n");
+        reporte.append("================================\n");
+        reporte.append("PASAJEROS:\n");
+        
+        var pasajeros = terminal.getPasajerosActuales();
+        if (pasajeros.isEmpty()) {
+            reporte.append("No hubo pasajeros en este viaje.\n");
+        } else {
+            for (Pasajero p : pasajeros) {
+                reporte.append("• ").append(p.getNombre()).append("\n");
+                reporte.append("  Origen: ").append(p.getOrigen()).append("\n");
+                reporte.append("  Destino: ").append(p.getDestino()).append("\n");
+                reporte.append("  Asiento: #").append(p.getNumeroAsiento()).append("\n");
+                reporte.append("  Precio: $").append(p.getPrecio()).append("\n");
+                reporte.append("  --------------------\n");
+            }
+        }
+        
+        reporte.append("\nRESUMEN FINANCIERO:\n");
+        reporte.append("Ganancias totales: $").append(terminal.getGananciasTotales()).append("\n");
+        reporte.append("Total de pasajeros: ").append(pasajeros.size()).append("\n");
+        reporte.append("Asientos ocupados: ").append(pasajeros.size()).append("/20\n");
+        
+        txtConsola.setText(reporte.toString());
+    }
+    
+    private void actualizarInterfaz() {
+        lblTerminalActualTexto.setText(terminal.getTerminalActual());
+        lblSiguienteTerminal.setText(terminal.getTerminalSiguiente());
+        
+        if (terminal.esUltimaTerminal()) {
+            btnAvanzar.setEnabled(false);
+            btnAvanzar.setText("FIN");
+        }
+    }
+    
+    // Método público para que DialogVenta pueda vender boletos
+    public boolean venderBoleto(String nombre, String origen, String destino, double precio, int asiento) {
+        Pasajero pasajero = new Pasajero(nombre, origen, destino, precio, asiento);
+        boolean vendido = terminal.venderBoleto(pasajero, asiento);
+        
+        if (vendido) {
+            txtConsola.append("Vendido: " + nombre + " a " + destino + " (Asiento #" + asiento + ")\n");
+            actualizarEstadosAsientos();
+        }
+        
+        return vendido;
     }
 
     /**
